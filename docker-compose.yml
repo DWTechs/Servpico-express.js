@@ -1,0 +1,18 @@
+version: "3.8"
+services:
+
+  servpico-express:
+    build: ./
+    container_name: servpico-express
+    volumes:
+      - ./:/usr/src/app
+      - servpico-express_node_modules:/usr/src/app/node_modules
+
+
+volumes:
+  servpico-express_node_modules:
+    driver: local
+    driver_opts:
+      type: none
+      o: bind
+      device: ${PWD}/node_modules
