@@ -31,6 +31,6 @@ function close(server) {
   }
 }
 
-export default {
+export {
   listen,
 };
