@@ -1,9 +1,6 @@
 import { log } from "@dwtechs/winstan";
-// TODO: Once dependencies are installed, import proper types:
-// import type { Express } from "express";
-
-// Global process declaration
-declare const process: any;
+import type { Express } from "express";
+import type { Server } from "http";
 
 const LOGS_PREFIX = "[servpico-express] ";
 const { PORT = "3000" } = process.env;
@@ -14,7 +11,7 @@ const { PORT = "3000" } = process.env;
  * This function binds the Express application to a port (from PORT environment variable or defaults to 3000)
  * and sets up graceful shutdown handlers for SIGTERM and SIGINT signals.
  * 
- * @param {any} app - The Express application instance to start listening
+ * @param {Express} app - The Express application instance to start listening
  * @returns {void} This function does not return a value
  * 
  * @example
@@ -29,7 +26,7 @@ const { PORT = "3000" } = process.env;
  * 
  * @since 0.4.5
  */
-function listen(app: any): void { // TODO: Change to Express when types are available
+function listen(app: Express): void {
   const s = app.listen(PORT, () => log.info(`${LOGS_PREFIX}App listening on port ${PORT}`));
   // Graceful shutdown
   process.on("SIGTERM", () => close(s));
@@ -45,7 +42,7 @@ function listen(app: any): void { // TODO: Change to Express when types are avai
  * - Exiting the process with status code 0 on successful closure
  * - Logging and handling any errors that occur during shutdown
  * 
- * @param {any} server - The HTTP server instance to be closed (typically returned from app.listen())
+ * @param {Server} server - The HTTP server instance to be closed (typically returned from app.listen())
  * @returns {void} This function does not return a value
  * 
  * @example
@@ -62,7 +59,7 @@ function listen(app: any): void { // TODO: Change to Express when types are avai
  * @throws {Error} Logs error if server cannot close properly, but does not throw
  * @since 0.4.5
  */
-function close(server: any): void { // TODO: Change to Server when types are available
+function close(server: Server): void {
   log.info(`${LOGS_PREFIX}SIGTERM signal received: closing service`);
   try {
     server.close(() => {

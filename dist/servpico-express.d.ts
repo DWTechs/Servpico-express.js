@@ -1,7 +1,7 @@
 /*
 MIT License
 
-Copyright (c) 2025 DWTechs
+Copyright (c) 2021 DWTechs
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -21,32 +21,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-https://github.com/DWTechs/Passken-express.js
+https://github.com/DWTechs/Servpico-express.js
 */
 
-import type { Request, Response, NextFunction } from 'express';
-import type { Options } from '@dwtechs/passken';
-import type { MyResponse } from './interfaces';
 
-// Extend Express Request interface globally
-declare global {
-  namespace Express {
-    interface Request {
-      isProtected?: boolean;
-      decodedAccessToken?: any;
-      decodedRefreshToken?: any;
-    }
-  }
-}
-
-declare function init(options: Options): void;
-declare function compare(req: Request, res: MyResponse, next: NextFunction): void;
-declare function create(req: Request, _res: Response, next: NextFunction): void;
-
-export { 
-  init,
-  compare,
-  create,
-};
-
-
+import type { Express } from "express";
+declare function listen(app: Express): void;
+export { listen, };
