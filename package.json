@@ -1,7 +1,7 @@
 {
   "name": "@dwtechs/servpico-express",
-  "version": "0.4.5",
-  "description": "Open source library to starts and closes Express.js service properly.",
+  "version": "0.1.0",
+  "description": "Open source library to start and close Express.js service properly.",
   "keywords": [
     "serve",
     "Express"
@@ -40,10 +40,10 @@
     "@dwtechs/winstan": "0.4.0"
   },
   "devDependencies": {
-    "@types/express": "5.0.0",
+    "@types/express": "5.0.3",
     "@rollup/plugin-node-resolve": "15.3.0",
     "core-js": "3.38.1",
     "rollup": "4.24.0",
-    "typescript": "5.6.3"
+    "typescript": "5.9.2"
   }
 }

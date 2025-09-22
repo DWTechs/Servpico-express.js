@@ -1,33 +1,76 @@
 import { log } from "@dwtechs/winstan";
+// TODO: Once dependencies are installed, import proper types:
+// import type { Express } from "express";
 
-const { PORT } = process.env;
+// Global process declaration
+declare const process: any;
+
+const LOGS_PREFIX = "[servpico-express] ";
+const { PORT = "3000" } = process.env;
 
 /**
- * Starts the server and listens for incoming requests.
- *
- * @param {Express} app - The Express application instance.
+ * Starts the server and listens for incoming requests on the specified port.
+ * 
+ * This function binds the Express application to a port (from PORT environment variable or defaults to 3000)
+ * and sets up graceful shutdown handlers for SIGTERM and SIGINT signals.
+ * 
+ * @param {any} app - The Express application instance to start listening
+ * @returns {void} This function does not return a value
+ * 
+ * @example
+ * ```typescript
+ * import express from 'express';
+ * import { listen } from '@dwtechs/servpico-express';
+ * 
+ * const app = express();
+ * app.get('/', (req, res) => res.send('Hello World!'));
+ * listen(app);
+ * ```
+ * 
+ * @since 0.4.5
  */
-function listen(app) {
-  const s = app.listen(PORT, () => log.info(`App listening on port ${PORT}`));
+function listen(app: any): void { // TODO: Change to Express when types are available
+  const s = app.listen(PORT, () => log.info(`${LOGS_PREFIX}App listening on port ${PORT}`));
   // Graceful shutdown
   process.on("SIGTERM", () => close(s));
   process.on("SIGINT", () => close(s));
 }
 
 /**
- * Closes the server gracefully upon receiving a SIGTERM signal.
- *
- * @param {Server} server - The server to be closed.
+ * Closes the server gracefully upon receiving a termination signal.
+ * 
+ * This function handles the graceful shutdown of an HTTP server by:
+ * - Logging the shutdown initiation
+ * - Closing the server and waiting for existing connections to finish
+ * - Exiting the process with status code 0 on successful closure
+ * - Logging and handling any errors that occur during shutdown
+ * 
+ * @param {any} server - The HTTP server instance to be closed (typically returned from app.listen())
+ * @returns {void} This function does not return a value
+ * 
+ * @example
+ * ```typescript
+ * import express from 'express';
+ * 
+ * const app = express();
+ * const server = app.listen(3000);
+ * 
+ * // Gracefully close the server
+ * close(server);
+ * ```
+ * 
+ * @throws {Error} Logs error if server cannot close properly, but does not throw
+ * @since 0.4.5
  */
-function close(server) {
-  log.info("SIGTERM signal received: closing service");
+function close(server: any): void { // TODO: Change to Server when types are available
+  log.info(`${LOGS_PREFIX}SIGTERM signal received: closing service`);
   try {
     server.close(() => {
-      log.info("Service closed");
+      log.info(`${LOGS_PREFIX}Service closed`);
       process.exit(0);
     });
   } catch (err) {
-    log.error(`Service cannot close properly: ${err}`);
+    log.error(`${LOGS_PREFIX}Service cannot close properly: ${err}`);
   }
 }
 

@@ -1,4 +1,4 @@
 
-# 0.1.0 (Aug 19th 2025)
+# 0.1.0 (Sep 22th 2025)
 
 - Initial release
