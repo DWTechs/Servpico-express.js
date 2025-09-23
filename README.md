@@ -74,7 +74,7 @@ If not found it will default to **3000**.
 
 ```javascript
 
-declare function listen(app: Express): void;
+function listen(app: Express): void;
 
 ```
 
