@@ -1,7 +1,7 @@
 
-[![License: MIT](https://img.shields.io/npm/l/@dwtechs/passken-express.svg?color=brightgreen)](https://opensource.org/licenses/MIT)
-[![npm version](https://badge.fury.io/js/%40dwtechs%2Fpassken-express.svg)](https://www.npmjs.com/package/@dwtechs/passken-express)
-[![last version release date](https://img.shields.io/github/release-date/DWTechs/Passken-express.js)](https://www.npmjs.com/package/@dwtechs/passken-express)
+[![License: MIT](https://img.shields.io/npm/l/@dwtechs/servpico-express.svg?color=brightgreen)](https://opensource.org/licenses/MIT)
+[![npm version](https://badge.fury.io/js/%40dwtechs%2Fservpico-express.svg)](https://www.npmjs.com/package/@dwtechs/servpico-express)
+[![last version release date](https://img.shields.io/github/release-date/DWTechs/Servpico-express.js)](https://www.npmjs.com/package/@dwtechs/servpico-express)
 
 
 - [Synopsis](#synopsis)
@@ -52,6 +52,8 @@ import { listen } from "@dwtechs/servpico-express";
 const app = express();
 // ...
 
+app.get('/', (req, res) => res.send('Hello World!'));
+
 // Init reference data
 Promise.all([
     // Your init asynchronous functions here
@@ -59,6 +61,8 @@ Promise.all([
   .then(() => listen(app))
   .catch((err) => log.error(`App cannot start: ${err.msg}`));
 
+// or the simplest way if no asynchronous reference data is needed : 
+// listen(app);
 
 ```
 

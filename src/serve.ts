@@ -23,8 +23,6 @@ const { PORT = "3000" } = process.env;
  * app.get('/', (req, res) => res.send('Hello World!'));
  * listen(app);
  * ```
- * 
- * @since 0.4.5
  */
 function listen(app: Express): void {
   const s = app.listen(PORT, () => log.info(`${LOGS_PREFIX}App listening on port ${PORT}`));
@@ -56,8 +54,7 @@ function listen(app: Express): void {
  * close(server);
  * ```
  * 
- * @throws {Error} Logs error if server cannot close properly, but does not throw
- * @since 0.4.5
+ * @throws {Error} Logs error if server cannot close properly
  */
 function close(server: Server): void {
   log.info(`${LOGS_PREFIX}SIGTERM signal received: closing service`);
