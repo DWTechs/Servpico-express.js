@@ -66,7 +66,7 @@ Promise.all([
 
 ```
 
-Le library will look for an environment variable named **PORT** to start the service on.
+The library will look for an environment variable named **PORT** to start the service on.
 If not found it will default to **3000**.
 
 
