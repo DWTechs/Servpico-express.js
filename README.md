@@ -74,7 +74,7 @@ If not found it will default to **3000**.
 
 ```javascript
 
-function listen(app: Express): Promise<http.Server>
+declare function listen(app: Express): void;
 
 ```
 
