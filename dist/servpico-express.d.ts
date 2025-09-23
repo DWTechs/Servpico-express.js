@@ -24,7 +24,8 @@ SOFTWARE.
 https://github.com/DWTechs/Servpico-express.js
 */
 
-
 import type { Express } from "express";
+import type { Server } from "http";
 declare function listen(app: Express): void;
-export { listen, };
+declare function close(server: Server): void;
+export { listen, close };

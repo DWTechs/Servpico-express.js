@@ -70,4 +70,5 @@ function close(server: Server): void {
 
 export {
   listen,
+  close,
 };

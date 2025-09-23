@@ -46,4 +46,4 @@ function close(server) {
     }
 }
 
-export { listen };
+export { close, listen };
