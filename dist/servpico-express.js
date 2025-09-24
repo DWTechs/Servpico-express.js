@@ -32,6 +32,7 @@ function listen(app) {
     const s = app.listen(PORT, () => log.info(`${LOGS_PREFIX}App listening on port ${PORT}`));
     process.on("SIGTERM", () => close(s));
     process.on("SIGINT", () => close(s));
+    process.on("SIGHUP", () => close(s));
 }
 function close(server) {
     log.info(`${LOGS_PREFIX}SIGTERM signal received: closing service`);

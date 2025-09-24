@@ -1,6 +1,5 @@
-import { close } from "../dist/servpico-express.js";
-import { log } from "@dwtechs/winstan";
-import { listen } from "../src/serve";
+const { listen, close } = require("../dist/servpico-express.js");
+const { log } = require("@dwtechs/winstan");
 
 describe("close", () => {
     let originalExit;
@@ -45,9 +44,9 @@ describe("close", () => {
 describe("listen", () => {
     let originalProcessOn;
     let originalClose;
+    let mockLogInfo;
     beforeAll(() => {
         originalProcessOn = process.on;
-        originalClose = jest.fn();
         process.on = jest.fn();
     });
     afterAll(() => {
@@ -55,9 +54,10 @@ describe("listen", () => {
     });
     beforeEach(() => {
         jest.clearAllMocks();
+        mockLogInfo = jest.spyOn(log, "info").mockImplementation(jest.fn());
+        originalClose = jest.fn();
     });
     it("should log and register signal handlers on listen", () => {
-        const mockLogInfo = jest.spyOn(require("@dwtechs/winstan"), "log").info.mockImplementation(jest.fn());
         const app = {
             listen: jest.fn((port, cb) => {
                 cb && cb();

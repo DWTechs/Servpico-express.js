@@ -2,6 +2,7 @@
 [![License: MIT](https://img.shields.io/npm/l/@dwtechs/servpico-express.svg?color=brightgreen)](https://opensource.org/licenses/MIT)
 [![npm version](https://badge.fury.io/js/%40dwtechs%2Fservpico-express.svg)](https://www.npmjs.com/package/@dwtechs/servpico-express)
 [![last version release date](https://img.shields.io/github/release-date/DWTechs/Servpico-express.js)](https://www.npmjs.com/package/@dwtechs/servpico-express)
+![Jest:coverage](https://img.shields.io/badge/Jest:coverage-81%25-brightgreen.svg)
 
 
 - [Synopsis](#synopsis)
