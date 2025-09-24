@@ -30,7 +30,7 @@
 
 - node: 22
 
-This is the oldest targeted versions.  
+This is the oldest targeted version.  
 
 
 ## Installation
@@ -69,12 +69,22 @@ Promise.all([
 The library will look for an environment variable named **PORT** to start the service on.
 If not found it will default to **3000**.
 
+### Test with docker
+
+Get the container id with "docker ps" command and kill the container like this :
+
+```bash
+$ docker ps
+$ docker kill --signal=SIGTERM <container_name_or_id>
+```
+
 
 ## API Reference
 
 ```javascript
 
 function listen(app: Express): void;
+function close(server: Server): void;
 
 ```
 
@@ -82,7 +92,6 @@ function listen(app: Express): void;
 ## Logs
 
 **Servpico-express.js** uses **[@dwtechs/Winstan](https://www.npmjs.com/package/@dwtechs/winstan)** library for logging.
-All logs are in debug mode. Meaning they should not appear in production mode.
 
 
 ## Contributors

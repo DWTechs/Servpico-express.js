@@ -9,7 +9,7 @@ const { PORT = "3000" } = process.env;
  * Starts the server and listens for incoming requests on the specified port.
  * 
  * This function binds the Express application to a port (from PORT environment variable or defaults to 3000)
- * and sets up graceful shutdown handlers for SIGTERM and SIGINT signals.
+ * and sets up graceful shutdown handlers for SIGTERM, SIGINT, and SIGHUP signals.
  * 
  * @param {Express} app - The Express application instance to start listening
  * @returns {void} This function does not return a value
@@ -29,6 +29,7 @@ function listen(app: Express): void {
   // Graceful shutdown
   process.on("SIGTERM", () => close(s));
   process.on("SIGINT", () => close(s));
+  process.on("SIGHUP", () => close(s));
 }
 
 /**
