@@ -1,5 +1,7 @@
 import { close } from "../dist/servpico-express.js";
 import { log } from "@dwtechs/winstan";
+import { listen } from "../src/serve";
+
 describe("close", () => {
     let originalExit;
     beforeAll(() => {
@@ -37,5 +39,35 @@ describe("close", () => {
         };
         close(server);
         expect(log.error).toHaveBeenCalledWith(expect.stringContaining("Service cannot close properly"));
+    });
+});
+
+describe("listen", () => {
+    let originalProcessOn;
+    let originalClose;
+    beforeAll(() => {
+        originalProcessOn = process.on;
+        originalClose = jest.fn();
+        process.on = jest.fn();
+    });
+    afterAll(() => {
+        process.on = originalProcessOn;
+    });
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+    it("should log and register signal handlers on listen", () => {
+        const mockLogInfo = jest.spyOn(require("@dwtechs/winstan"), "log").info.mockImplementation(jest.fn());
+        const app = {
+            listen: jest.fn((port, cb) => {
+                cb && cb();
+                return { close: originalClose };
+            })
+        };
+        listen(app);
+        expect(app.listen).toHaveBeenCalled();
+        expect(mockLogInfo).toHaveBeenCalledWith(expect.stringContaining("App listening on port"));
+        expect(process.on).toHaveBeenCalledWith("SIGTERM", expect.any(Function));
+        expect(process.on).toHaveBeenCalledWith("SIGINT", expect.any(Function));
     });
 });
