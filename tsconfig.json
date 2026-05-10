@@ -1,9 +1,10 @@
 {
   "compilerOptions": {
-    "module": "ES6",
-    "moduleResolution": "node",
-    "target": "ES6",
-    "lib": ["dom", "es2019"],
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "target": "ES2022",
+    "lib": ["es2022"],
+    "skipLibCheck": true,
     "sourceMap": false,
     "noImplicitAny": true,
     "noImplicitReturns": true,
@@ -18,7 +19,7 @@
     "allowJs": false,
     "removeComments": true,
     "declaration": true,
-    "outDir": "build/es6/",
+    "outDir": "build/",
     "rootDir": "src/"
   },
   "exclude": ["node_modules"]

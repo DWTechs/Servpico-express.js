@@ -1,5 +1,5 @@
 
-const fs      = require('fs');
+import fs from 'fs';
 
 const mail    = 'https://github.com/DWTechs/Servpico-express.js';
 const CRLF    = '\r\n';

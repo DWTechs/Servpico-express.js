@@ -1,5 +1,5 @@
 const config =  {
-  input: "build/es6/servpico-express.js",
+  input: "build/servpico-express.js",
   output: {
     name: "servpico",
     file: "build/servpico-express.mjs",

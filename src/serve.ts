@@ -25,7 +25,7 @@ const { PORT = "3000" } = process.env;
  * ```
  */
 function listen(app: Express): void {
-  const s = app.listen(PORT, () => log.info(`${LOGS_PREFIX}App listening on port ${PORT}`));
+  const s = app.listen(PORT, () => log.info(() => `${LOGS_PREFIX}App listening on port ${PORT}`));
   // Graceful shutdown
   process.on("SIGTERM", () => close(s));
   process.on("SIGINT", () => close(s));
@@ -65,7 +65,7 @@ function close(server: Server): void {
       process.exit(0);
     });
   } catch (err) {
-    log.error(`${LOGS_PREFIX}Service cannot close properly: ${err}`);
+    log.error(() => `${LOGS_PREFIX}Service cannot close properly: ${err}`);
   }
 }
 

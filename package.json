@@ -1,35 +1,41 @@
 {
   "name": "@dwtechs/servpico-express",
-  "version": "0.2.0",
+  "version": "0.2.1",
+  "type": "module",
   "description": "Open source library to start and close Express.js service properly.",
   "keywords": [
     "serve",
     "Express"
   ],
   "homepage": "https://github.com/DWTechs/Servpico-express.js",
-  "main": "dist/servpico-express",
-  "types": "dist/servpico-express",
+  "main": "dist/servpico-express.js",
+  "types": "dist/servpico-express.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/servpico-express.js",
+      "types": "./dist/servpico-express.d.ts"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/DWTechs/Servpico-express.js"
   },
   "bugs": {
-    "url": "https://github.com/DWTechs/Servpico-express.js/issues",
-    "email": ""
+    "url": "https://github.com/DWTechs/Servpico-express.js/issues"
   },
   "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
   "author": {
     "name": "Ludovic Cluber",
     "email": "http://www.lcluber.com/contact",
     "url": "http://www.lcluber.com"
   },
-  "contributors": [],
   "scripts": {
-    "start": "",
     "prebuild": "npm install",
     "build": "node ./scripts/clear && tsc && npm run rollup && node ./scripts/copy && npm run test",
     "rollup:mjs": "rollup --config rollup.config.mjs",
-    "rollup:cjs": "rollup --config rollup.config.cjs.mjs",
     "rollup": "npm run rollup:mjs",
     "test": "jest --coverage"
   },
@@ -37,17 +43,15 @@
     "dist/"
   ],
   "dependencies": {
-    "@dwtechs/winstan": "0.4.0"
+    "@dwtechs/winstan": "0.7.0"
   },
   "devDependencies": {
     "@babel/preset-env": "7.26.0",
-    "@types/express": "5.0.3",
-    "@types/node": "22.7.4",
-    "@rollup/plugin-node-resolve": "15.3.0",
+    "@types/express": "5.0.6",
+    "@types/node": "25.6.2",
     "babel-jest": "29.7.0",
-    "core-js": "3.38.1",
     "jest": "29.7.0",
     "rollup": "4.24.0",
-    "typescript": "5.9.2"
+    "typescript": "6.0.3"
   }
 }

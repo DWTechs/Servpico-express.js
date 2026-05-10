@@ -37,7 +37,7 @@ describe("close", () => {
             }
         };
         close(server);
-        expect(log.error).toHaveBeenCalledWith(expect.stringContaining("Service cannot close properly"));
+        expect(log.error).toHaveBeenCalledWith(expect.any(Function));
     });
 });
 
@@ -66,7 +66,7 @@ describe("listen", () => {
         };
         listen(app);
         expect(app.listen).toHaveBeenCalled();
-        expect(mockLogInfo).toHaveBeenCalledWith(expect.stringContaining("App listening on port"));
+        expect(mockLogInfo).toHaveBeenCalledWith(expect.any(Function));
         expect(process.on).toHaveBeenCalledWith("SIGTERM", expect.any(Function));
         expect(process.on).toHaveBeenCalledWith("SIGINT", expect.any(Function));
     });
