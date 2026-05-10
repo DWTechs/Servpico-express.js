@@ -107,8 +107,8 @@ To contribute please read **[contributor.md](https://github.com/DWTechs/Servpico
 
 | Purpose         |                    Choice                    |                                                     Motivation |
 | :-------------- | :------------------------------------------: | -------------------------------------------------------------: |
-| repository      |        [Github](https://github.com/)         |     hosting for software development version control using Git |
-| package manager |     [npm](https://www.npmjs.com/get-npm)     |                                default node.js package manager |
+| repository      |        [Github](https://github.com/)         | hosting for software development version control using Git |
+| package manager |     [npm](https://www.npmjs.com/get-npm)     | default node.js package manager |
 | language        | [TypeScript](https://www.typescriptlang.org) | static type checking along with the latest ECMAScript features |
-| module bundler  |      [Rollup](https://rollupjs.org)          |                        advanced module bundler for ES6 modules |
-| unit testing    |          [Jest](https://jestjs.io/)          |                  delightful testing with a focus on simplicity |
+| module bundler  |      [Rollup](https://rollupjs.org)          | advanced module bundler for ES2022 modules |
+| unit testing    |          [Jest](https://jestjs.io/)          | delightful testing with a focus on simplicity |
