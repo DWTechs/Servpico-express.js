@@ -6,11 +6,11 @@
 
 
 - [Synopsis](#synopsis)
-- [Support](#support)
 - [Installation](#installation)
 - [Usage](#usage)
 - [API Reference](#api-reference)
 - [Logs](#logs)
+- [Support](#support)
 - [Contributors](#contributors)
 - [Stack](#stack)
 
@@ -23,15 +23,8 @@
 - 📦 Only 1 dependency to log service activity properly
 - 🪶 Very lightweight
 - 🧪 Thoroughly tested
-- 🚚 Shipped as EcmaScrypt Express module
+- 🚚 Shipped as ES2022 ECMAScript module
 - 📝 Written in Typescript
-
-
-## Support
-
-- node: 22
-
-This is the oldest targeted version.  
 
 
 ## Installation
@@ -46,7 +39,6 @@ $ npm i @dwtechs/servpico-express
 ```javascript
 
 import express from "express";
-import { log } from "@dwtechs/winstan";
 import { listen } from "@dwtechs/servpico-express";
 
 // Usual express app initialization
@@ -60,15 +52,17 @@ Promise.all([
     // Your init asynchronous functions here
   ])
   .then(() => listen(app))
-  .catch((err) => log.error(`App cannot start: ${err.msg}`));
+  .catch((err) => console.error(`App cannot start: ${err.message}`));
 
-// or the simplest way if no asynchronous reference data is needed : 
+// or the simplest way if no asynchronous reference data is needed:
 // listen(app);
 
 ```
 
 The library will look for an environment variable named **PORT** to start the service on.
-If not found it will default to **3000**.
+It must be a valid integer between **1** and **65535**. If not set or invalid, it defaults to **3000**.
+
+`listen()` automatically registers graceful shutdown handlers for **SIGTERM**, **SIGINT**, and **SIGHUP** signals, which will call `close()` on the server.
 
 ### Test with docker
 
@@ -79,27 +73,35 @@ $ docker ps
 $ docker kill --signal=SIGTERM <container_name_or_id>
 ```
 
-
 ## API Reference
 
-```javascript
+```typescript
 
+// Start the server on process.env.PORT (default: 3000).
+// Automatically registers SIGTERM, SIGINT, and SIGHUP handlers for graceful shutdown.
 function listen(app: Express): void;
+
+// Gracefully close an HTTP server and exit the process with code 0.
+// Called automatically by listen() on termination signals.
+// Use this directly only if you manage the server lifecycle yourself.
 function close(server: Server): void;
 
 ```
-
 
 ## Logs
 
 **Servpico-express.js** uses **[@dwtechs/Winstan](https://www.npmjs.com/package/@dwtechs/winstan)** library for logging.
 
+## Support
+
+| Environment | Version |
+| :---------- | :-----: |
+| Node.js     |  >= 22  |
 
 ## Contributors
 
 **Servpico-express.js** is still in development and we would be glad to get all the help you can provide.
 To contribute please read **[contributor.md](https://github.com/DWTechs/Servpico-express.js/blob/main/contributor.md)** for detailed installation guide.
-
 
 ## Stack
 

@@ -23,7 +23,7 @@ describe("close", () => {
             }
         };
         close(server);
-        expect(log.info).toHaveBeenCalledWith(expect.stringContaining("SIGTERM signal received"));
+        expect(log.info).toHaveBeenCalledWith(expect.stringContaining("Shutdown signal received"));
         expect(log.info).toHaveBeenCalledWith(expect.stringContaining("Service closed"));
         expect(log.error).not.toHaveBeenCalled();
         expect(process.exit).toHaveBeenCalledWith(0);
@@ -38,19 +38,20 @@ describe("close", () => {
         };
         close(server);
         expect(log.error).toHaveBeenCalledWith(expect.any(Function));
+        expect(process.exit).toHaveBeenCalledWith(1);
     });
 });
 
 describe("listen", () => {
-    let originalProcessOn;
+    let originalProcessOnce;
     let originalClose;
     let mockLogInfo;
     beforeAll(() => {
-        originalProcessOn = process.on;
-        process.on = jest.fn();
+        originalProcessOnce = process.once;
+        process.once = jest.fn();
     });
     afterAll(() => {
-        process.on = originalProcessOn;
+        process.once = originalProcessOnce;
     });
     beforeEach(() => {
         jest.clearAllMocks();
@@ -67,7 +68,56 @@ describe("listen", () => {
         listen(app);
         expect(app.listen).toHaveBeenCalled();
         expect(mockLogInfo).toHaveBeenCalledWith(expect.any(Function));
-        expect(process.on).toHaveBeenCalledWith("SIGTERM", expect.any(Function));
-        expect(process.on).toHaveBeenCalledWith("SIGINT", expect.any(Function));
+        expect(process.once).toHaveBeenCalledWith("SIGTERM", expect.any(Function));
+        expect(process.once).toHaveBeenCalledWith("SIGINT", expect.any(Function));
+        expect(process.once).toHaveBeenCalledWith("SIGHUP", expect.any(Function));
+    });
+    it("should use a valid numeric PORT from env", () => {
+        process.env.PORT = "8080";
+        const app = {
+            listen: jest.fn((port, cb) => {
+                cb && cb();
+                return { close: originalClose };
+            })
+        };
+        listen(app);
+        expect(app.listen).toHaveBeenCalledWith(8080, expect.any(Function));
+        delete process.env.PORT;
+    });
+    it("should fall back to port 3000 for an invalid PORT env value", () => {
+        process.env.PORT = "not-a-port";
+        const app = {
+            listen: jest.fn((port, cb) => {
+                cb && cb();
+                return { close: originalClose };
+            })
+        };
+        listen(app);
+        expect(app.listen).toHaveBeenCalledWith(3000, expect.any(Function));
+        delete process.env.PORT;
+    });
+    it("should fall back to port 3000 for an out-of-range PORT env value", () => {
+        process.env.PORT = "99999";
+        const app = {
+            listen: jest.fn((port, cb) => {
+                cb && cb();
+                return { close: originalClose };
+            })
+        };
+        listen(app);
+        expect(app.listen).toHaveBeenCalledWith(3000, expect.any(Function));
+        delete process.env.PORT;
+    });
+    it("should fall back to port 3000 when PORT env is 0", () => {
+        process.env.PORT = "0";
+        const app = {
+            listen: jest.fn((port, cb) => {
+                cb && cb();
+                return { close: originalClose };
+            })
+        };
+        listen(app);
+        expect(app.listen).toHaveBeenCalledWith(3000, expect.any(Function));
+        delete process.env.PORT;
     });
 });

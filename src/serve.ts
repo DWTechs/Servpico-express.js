@@ -3,7 +3,12 @@ import type { Express } from "express";
 import type { Server } from "http";
 
 const LOGS_PREFIX = "[servpico-express] ";
-const { PORT = "3000" } = process.env;
+const DEFAULT_PORT = 3000;
+
+function parsePort(raw: string | undefined): number {
+  const n = Number(raw);
+  return Number.isInteger(n) && n >= 1 && n <= 65535 ? n : DEFAULT_PORT;
+}
 
 /**
  * Starts the server and listens for incoming requests on the specified port.
@@ -25,11 +30,12 @@ const { PORT = "3000" } = process.env;
  * ```
  */
 function listen(app: Express): void {
-  const s = app.listen(PORT, () => log.info(() => `${LOGS_PREFIX}App listening on port ${PORT}`));
-  // Graceful shutdown
-  process.on("SIGTERM", () => close(s));
-  process.on("SIGINT", () => close(s));
-  process.on("SIGHUP", () => close(s));
+  const port = parsePort(process.env.PORT);
+  const s = app.listen(port, () => log.info(() => `${LOGS_PREFIX}App listening on port ${port}`));
+  // Graceful shutdown — use once() to avoid duplicate handlers and double-close
+  process.once("SIGTERM", () => close(s));
+  process.once("SIGINT", () => close(s));
+  process.once("SIGHUP", () => close(s));
 }
 
 /**
@@ -58,7 +64,7 @@ function listen(app: Express): void {
  * @throws {Error} Logs error if server cannot close properly
  */
 function close(server: Server): void {
-  log.info(`${LOGS_PREFIX}SIGTERM signal received: closing service`);
+  log.info(`${LOGS_PREFIX}Shutdown signal received: closing service`);
   try {
     server.close(() => {
       log.info(`${LOGS_PREFIX}Service closed`);
@@ -66,6 +72,7 @@ function close(server: Server): void {
     });
   } catch (err) {
     log.error(() => `${LOGS_PREFIX}Service cannot close properly: ${err}`);
+    process.exit(1);
   }
 }
 
