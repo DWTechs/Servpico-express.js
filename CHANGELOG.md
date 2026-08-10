@@ -16,6 +16,7 @@
   `Select.execute` throws `{ status, message }` while other paths throw `Error`).
 - Return type is `never` — TypeScript recognizes calls to `failFast` as
   terminating, keeping downstream unreachable-code diagnostics accurate.
+- Update @dwtechs/winstan dependency to version 0.7.1
 
 # 0.2.1 (May 09th 2026)
 
