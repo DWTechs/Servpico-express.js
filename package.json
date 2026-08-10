@@ -1,6 +1,6 @@
 {
   "name": "@dwtechs/servpico-express",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "type": "module",
   "sideEffects": false,
   "description": "Open source library to start and close Express.js service properly.",

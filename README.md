@@ -7,6 +7,7 @@
 
 - [Synopsis](#synopsis)
 - [Installation](#installation)
+- [Configuration](#configuration)
 - [Usage](#usage)
 - [API Reference](#api-reference)
 - [Logs](#logs)
@@ -32,6 +33,16 @@
 ```bash
 $ npm i @dwtechs/servpico-express
 ```
+
+
+## Configuration
+
+Servpico-express reads the following environment variables:
+
+| Variable               | Required | Default | Description                                                                                     |
+| ---------------------- | -------- | ------- | ----------------------------------------------------------------------------------------------- |
+| `PORT`                 | no       | `3000`  | Port to bind. Must be an integer in `[1, 65535]`; invalid values fall back to the default.       |
+| `SHUTDOWN_TIMEOUT_MS`  | no       | `10000` | Force-exit deadline (ms) if `server.close()` doesn't complete — see [Shutdown behavior](#shutdown-behavior). |
 
 
 ## Usage
@@ -64,10 +75,37 @@ terminates the process with exit code 1 (so your container / process manager
 restarts you) instead of leaving a zombie process alive with no HTTP port
 bound. See the [API Reference](#api-reference) for the full rationale.
 
-The library will look for an environment variable named **PORT** to start the service on.
-It must be a valid integer between **1** and **65535**. If not set or invalid, it defaults to **3000**.
-
 `listen()` automatically registers graceful shutdown handlers for **SIGTERM**, **SIGINT**, and **SIGHUP** signals, which will call `close()` on the server.
+
+### Startup errors
+
+Bind failures (`EADDRINUSE`, `EACCES`, `EADDRNOTAVAIL`, ...) surface
+asynchronously via the underlying HTTP server's `error` event, not as a
+synchronous throw. Since 0.3.1 `listen()` attaches a listener for that event
+and routes failures through `failFast`, producing the same clean
+`[servpico-express] App cannot start: ...` output as the pre-`listen()` init
+path. Post-listen server-level errors (rare — FD exhaustion, kernel socket
+issues) are logged as `Server error after listening: ...` and also trigger a
+deferred `process.exit(1)`. In both cases the orchestrator can restart
+cleanly rather than seeing an unprefixed Node stack trace or a zombie.
+
+### Shutdown behavior
+
+`close()` (invoked automatically on SIGTERM / SIGINT / SIGHUP) awaits
+`server.close()`, which itself waits for all in-flight connections to finish.
+Long-lived keep-alive, SSE, or WebSocket connections can hold that callback
+open indefinitely — long enough that Kubernetes / Docker / systemd send
+SIGKILL and terminate the process dirtily.
+
+Since 0.3.1 `close()` starts a **force-exit timer** (default `10000` ms,
+configurable via `SHUTDOWN_TIMEOUT_MS`). If `server.close()` hasn't completed
+in time, the process logs a warning and exits `1` on its own — inside your
+own grace window, with a clean log line explaining what happened. The timer
+is `unref`'d so it doesn't itself keep the event loop alive.
+
+The success-path exit is also deferred via `setImmediate` so the final
+"Service closed" log line flushes to piped stdout / stderr before the
+process exits.
 
 ### Test with docker
 
@@ -84,11 +122,18 @@ $ docker kill --signal=SIGTERM <container_name_or_id>
 
 // Start the server on process.env.PORT (default: 3000).
 // Automatically registers SIGTERM, SIGINT, and SIGHUP handlers for graceful shutdown.
+// Since 0.3.1: attaches a server 'error' listener; bind failures
+// (EADDRINUSE / EACCES / ...) route through failFast for a clean exit
+// instead of an unprefixed Node stack trace.
 function listen(app: Express): void;
 
 // Gracefully close an HTTP server and exit the process with code 0.
 // Called automatically by listen() on termination signals.
 // Use this directly only if you manage the server lifecycle yourself.
+// Since 0.3.1: starts a force-exit timer (SHUTDOWN_TIMEOUT_MS, default
+// 10000ms) so long-lived connections can't zombie the shutdown, and the
+// success exit is deferred via setImmediate for log-flush parity with
+// failFast.
 function close(server: Server): void;
 
 // Terminal handler for unrecoverable boot-time errors. Intended as a
