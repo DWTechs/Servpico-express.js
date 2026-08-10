@@ -1,7 +1,8 @@
 {
   "name": "@dwtechs/servpico-express",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "type": "module",
+  "sideEffects": false,
   "description": "Open source library to start and close Express.js service properly.",
   "keywords": [
     "serve",
@@ -12,8 +13,8 @@
   "types": "dist/servpico-express.d.ts",
   "exports": {
     ".": {
-      "import": "./dist/servpico-express.js",
-      "types": "./dist/servpico-express.d.ts"
+      "types": "./dist/servpico-express.d.ts",
+      "import": "./dist/servpico-express.js"
     }
   },
   "repository": {
@@ -42,6 +43,9 @@
   "files": [
     "dist/"
   ],
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
     "@dwtechs/winstan": "0.7.0"
   },

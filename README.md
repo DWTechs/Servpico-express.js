@@ -39,7 +39,7 @@ $ npm i @dwtechs/servpico-express
 ```javascript
 
 import express from "express";
-import { listen } from "@dwtechs/servpico-express";
+import { listen, failFast } from "@dwtechs/servpico-express";
 
 // Usual express app initialization
 const app = express();
@@ -47,17 +47,22 @@ const app = express();
 
 app.get('/', (req, res) => res.send('Hello World!'));
 
-// Init reference data
+// Init reference data — fail fast if any init step rejects.
 Promise.all([
     // Your init asynchronous functions here
   ])
   .then(() => listen(app))
-  .catch((err) => console.error(`App cannot start: ${err.message}`));
+  .catch(failFast);
 
 // or the simplest way if no asynchronous reference data is needed:
 // listen(app);
 
 ```
+
+Using `failFast` as the `.catch` handler ensures a rejected init promise
+terminates the process with exit code 1 (so your container / process manager
+restarts you) instead of leaving a zombie process alive with no HTTP port
+bound. See the [API Reference](#api-reference) for the full rationale.
 
 The library will look for an environment variable named **PORT** to start the service on.
 It must be a valid integer between **1** and **65535**. If not set or invalid, it defaults to **3000**.
@@ -85,6 +90,26 @@ function listen(app: Express): void;
 // Called automatically by listen() on termination signals.
 // Use this directly only if you manage the server lifecycle yourself.
 function close(server: Server): void;
+
+// Terminal handler for unrecoverable boot-time errors. Intended as a
+// `.catch` handler on the pre-listen() init pipeline:
+//
+//   Promise.all([svc1.init(), svc2.init()]).then(() => listen(app)).catch(failFast);
+//
+// Logs the error (message + stack) with the `[servpico-express]` prefix,
+// then defers process.exit(1) by one tick via setImmediate so the log
+// line can flush to stderr on piped destinations (Docker, systemd, PM2).
+//
+// Required (rather than a naked process.exit(1) in your own .catch)
+// because: (1) init() rejections mean listen() was never called, so the
+// SIGTERM/SIGINT/SIGHUP handlers registered inside listen() don't exist
+// — open handles from imported modules (DB pools, timers) would keep the
+// Node runtime alive as a zombie; (2) process.exitCode = 1 alone would
+// not help because the event loop never drains; (3) synchronous exit
+// without setImmediate would truncate the last log line on piped stderr.
+//
+// Accepts { message }, { msg }, string, and null/undefined error shapes.
+function failFast(err: unknown): never;
 
 ```
 

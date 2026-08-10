@@ -1,6 +1,6 @@
 
 export {
   listen,
-  close
+  close,
+  failFast,
 } from './serve';
-  
